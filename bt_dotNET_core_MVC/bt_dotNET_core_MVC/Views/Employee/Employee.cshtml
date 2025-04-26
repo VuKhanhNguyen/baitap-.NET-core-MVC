@@ -1,0 +1,265 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Employees information";
+}
+
+@model IEnumerable<bt_dotNET_core_MVC.Models.Employee>
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <br>
+    <h2>Employees list</h2>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Department</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var emp in Model)
+        {
+            <tr>
+                <td>@emp.EmployeesName</td>
+                <td>@emp.Sdt</td>
+                <td>@emp.Department.DepartmentName</td>
+                <td>
+                    <button type="button" class="btn btn-info btn-sm"
+                            onclick="window.location.href='@Url.Action("Detail118", "Employee", new { id = emp.EmployeesId })'">
+                        Detail
+                    </button>
+
+                    <button type="button" class="btn btn-warning btn-sm" onclick="openEditModal('@emp.EmployeesId')">
+                        Edit
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="if (confirm('Bạn có chắc muốn xóa nhân viên này không?')) {document.getElementById('deleteForm-@emp.EmployeesId').submit(); }">
+                        Delete
+                    </button>
+                    
+                    <!--Xóa nhân viên-->
+                    <form id="deleteForm-@emp.EmployeesId" method="post" action="@Url.Action("Delete118", "Employee")" style="display:none;">
+                        <input type="hidden" name="id" value="@emp.EmployeesId" />
+                    </form>
+
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+        Add new employee
+    </button>
+
+    
+    <!-- Modal thêm nhân viên -->
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="createEmployeeForm"  method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEmployeeModalLabel">Thêm nhân viên mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Họ tên</label>
+                                <input name="EmployeesName" class="form-control" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Số điện thoại</label>
+                                <input name="SDT" class="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Tuổi</label>
+                                <input name="Age" class="form-control" type="number" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Giới tính</label>
+                                <select name="Gender" class="form-select">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Vị trí</label>
+                                <input name="Position" class="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Lương</label>
+                                <input name="Salary" class="form-control" type="number" />
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label">Phòng ban</label>
+                                <select name="DepartmentId" class="form-select">
+                                    
+                                    @foreach (var dept in ViewBag.Departments)
+                                    {
+                                        <option value="@dept.DepartmentId">@dept.DepartmentName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer mt-3">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal chỉnh sửa nhân viên -->
+<div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="editEmployeeForm" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEmployeeModalLabel">Chỉnh sửa nhân viên</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <input type="hidden" name="EmployeesId" id="editEmployeesId" />
+                        <div class="col-md-6">
+                            <label class="form-label">Họ tên</label>
+                            <input name="EmployeesName" id="editEmployeesName" class="form-control" required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Số điện thoại</label>
+                            <input name="SDT" id="editSDT" class="form-control"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tuổi</label>
+                            <input name="Age" id="editAge" class="form-control" type="number"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Giới tính</label>
+                            <select name="Gender" id="editGender" class="form-select">
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Vị trí</label>
+                            <input name="Position" id="editPosition" class="form-control"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Lương</label>
+                            <input name="Salary" id="editSalary" class="form-control" type="number"/>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Phòng ban</label>
+                            <select name="DepartmentId" id="editDepartmentId" class="form-select">
+                                @foreach (var dept in ViewBag.Departments)
+                                {
+                                    <option value="@dept.DepartmentId">@dept.DepartmentName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer mt-3">
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form118 = document.getElementById('createEmployeeForm');
+            form118.addEventListener('submit', async function (e) {
+                e.preventDefault(); // Ngăn chặn gửi form đi theo cách mặc định
+
+                const formData118 = new FormData(form118);
+
+                try {
+                    // Gửi yêu cầu POST với formData tới /Employee/Create
+                    const response118 = await fetch('/Employee/Create118', {
+                        method: 'POST',
+                        body: formData118
+                    });
+
+                    if (response118.ok) {
+                        // Đóng modal khi thêm thành công
+                        const modal118 = bootstrap.Modal.getInstance(document.getElementById('addEmployeeModal'));
+                        modal118.hide();
+
+                        // Reload lại danh sách nhân viên
+                        location.reload();
+                    } else {
+                        alert("Thêm thất bại. Vui lòng thử lại.");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("Có lỗi xảy ra.");
+                }
+            });
+        });
+             
+            const editForm118 = document.getElementById('editEmployeeForm');
+            editForm118.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const formData118 = new FormData(editForm118);
+
+                try {
+                    const response118 = await fetch('/Employee/Edit118', {
+                        method: 'POST',
+                        body: formData118
+                    });
+
+                    if (response118.ok) {
+                        bootstrap.Modal.getInstance(document.getElementById('editEmployeeModal')).hide();
+                        location.reload();
+                    } else {
+                        alert("Cập nhật thất bại.");
+                    }
+                } catch (err) {
+                    alert("Lỗi hệ thống.");
+                }
+            });
+        
+
+        function openEditModal(employeeId) {
+            fetch('/Employee/GetEmployeeById?id=' + employeeId)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('editEmployeesId').value = employeeId;
+                    document.getElementById('editEmployeesName').value = data.employeesName;
+                    document.getElementById('editSDT').value = data.sdt;
+                    document.getElementById('editAge').value = data.age;
+                    document.getElementById('editGender').value = data.gender;
+                    document.getElementById('editPosition').value = data.position;
+                    document.getElementById('editSalary').value = data.salary;
+                    document.getElementById('editDepartmentId').value = data.departmentId;
+
+                    new bootstrap.Modal(document.getElementById('editEmployeeModal')).show();
+                })
+                .catch(error => console.error('Lỗi lấy dữ liệu:', error));
+        }
+
+    </script>
+}
+

@@ -1,0 +1,26 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model bt_dotNET_core_MVC.Models.Employee
+
+@{
+    ViewData["Title"] = "Employee Detail";
+}
+
+<h2>Employee Detail</h2>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.EmployeesName</h5>
+        <p class="card-text"><strong>ID:</strong> @Model.EmployeesId</p>
+        <p class="card-text"><strong>Phone:</strong> @Model.Sdt</p>
+        <p class="card-text"><strong>Age:</strong> @Model.Age</p>
+        <p class="card-text"><strong>Gender:</strong> @Model.Gender</p>
+        <p class="card-text"><strong>Position:</strong> @Model.Position</p>
+        <p class="card-text"><strong>Salary:</strong> @Model.Salary</p>
+        <p class="card-text"><strong>Department:</strong> @Model.Department?.DepartmentName</p>
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='@Url.Action("Employee", "Employee")'">
+            Back
+        </button>
+
+    </div>
+</div>
